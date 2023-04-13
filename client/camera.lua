@@ -2,20 +2,20 @@ local QBCore = exports['qb-core']:GetCoreObject()
 
 
 
+local using = false
 
-
-
+local newCam = nil
 
 RegisterNetEvent('Polar-Sub:Client:W', function()
-
+    if not using then
 	local currentCamMode = GetFollowPedCamViewMode()
-
+    using = true
   
         local cameraOffset = vector3(0.0, 1.0, 0.7) -- adjust this value to change the distance
         local cameraPos = GetOffsetFromEntityInWorldCoords(PlayerPedId(), cameraOffset)
 
      
-        local newCam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
+        newCam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
         SetCamCoord(newCam, cameraPos.x, cameraPos.y, cameraPos.z)
         SetCamRot(newCam, -10.0, 0.0, GetEntityHeading(PlayerPedId()) - 180.0, 2)
         SetCamFov(newCam, 50.0)
@@ -33,6 +33,12 @@ RegisterNetEvent('Polar-Sub:Client:W', function()
     while DoesCamExist(newCam) do -- While the camera exists, do the following:
         SetUseHiDof() -- Sets the camera to use high dof
         Wait(0) -- Waits 0 milliseconds before repeating the loop
+    end
+    else
+        using = false
+        ClearFocus()
+        RenderScriptCams(false, false, 0, 1, 0)
+        DestroyCam(newCam, false)
     end
 end)
 
@@ -67,8 +73,10 @@ local cam = nil
 local camTransitioning = false
 
 RegisterNetEvent('Polar-Sub:Client:S', function()
+    if not using then
+        using = true
     local coords = GetEntityCoords(PlayerPedId())
-
+ 
    
     cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
        
@@ -136,5 +144,11 @@ RegisterNetEvent('Polar-Sub:Client:S', function()
               
             end
         end
-
+    else
+        using = false
+        ClearFocus()
+        RenderScriptCams(false, false, 0, 1, 0)
+        DestroyCam(cam, false)
+    
+    end
 end)
