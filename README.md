@@ -3,3 +3,5 @@
 DISCORD: https://discord.gg/polar
 
 https://streamable.com/lm027q
+
+uses some ps-camera code to turn camera and zoom
